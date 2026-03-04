@@ -1,6 +1,6 @@
 import bcryptjs from "bcryptjs";
 import { envVars } from "../config/env";
-import { AccountStatus, IAuthProvider, IUser, Role } from "../modules/user/user.interface";
+import { IAuthProvider, IUser, Role } from "../modules/user/user.interface";
 import { User } from "../modules/user/user.model";
 
 export const seedSuperAdmin = async () => {
@@ -28,7 +28,6 @@ export const seedSuperAdmin = async () => {
             password: hashedPassword,
             isVerified: true,
             auths: [authProvider],
-            accountStatus: AccountStatus.ACTIVE,
             // lastLogin?: Date
         }
 
