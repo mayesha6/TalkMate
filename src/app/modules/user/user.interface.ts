@@ -5,10 +5,6 @@ export enum Role {
   ADMIN = "ADMIN",
   USER = "USER",
 }
-export enum AccountStatus {
-  ACTIVE = "ACTIVE",
-  DISABLED = "DISABLED",
-}
 
 export interface IAuthProvider {
   provider: "google" | "credentials";
@@ -31,7 +27,6 @@ export interface IUser {
   isActive?: IsActive;
   isVerified?: boolean;
   role: Role;
-  accountStatus: AccountStatus;
   lastLogin?: Date;
   auths: IAuthProvider[];
   createdAt?: Date;
