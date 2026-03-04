@@ -1,6 +1,6 @@
-# 🤖 AI Chatbot SaaS – Backend
+# 🤖 TALKMATE - AI Chatbot SaaS – Backend
 
-A production-ready, scalable backend system for a Web-based AI Chatbot application with authentication, role-based access control, real-time AI streaming, file upload support (AWS S3), and admin monitoring.
+TalkMate is a production-ready, scalable backend system for a Web-based AI Chatbot application with authentication, role-based access control, real-time AI streaming, file upload support (AWS S3), and admin monitoring.
 
 ---
 
