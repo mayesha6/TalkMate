@@ -25,19 +25,19 @@ TalkMate is a production-ready, scalable backend system for a Web-based AI Chatb
 
 # 🏗 System Architecture
 
-Frontend (React)
-⬇
-Express API
-⬇
-Authentication (JWT / Passport)
-⬇
-Chat Controller
-⬇
-OpenAI API (Streaming via SSE)
-⬇
-MongoDB (Conversation & Messages)
-⬇
-AWS S3 (File Storage)
+Frontend (React)  
+⬇  
+Express API  
+⬇  
+Authentication (JWT / Passport)  
+⬇  
+Chat Controller  
+⬇  
+OpenAI API (Streaming via SSE)  
+⬇  
+MongoDB (Conversation & Messages)  
+⬇  
+AWS S3 (File Storage)  
 
 ---
 
