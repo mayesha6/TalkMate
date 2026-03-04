@@ -1,57 +1,171 @@
-# Jotter System Backend
+# 🤖 AI Chatbot SaaS – Backend
 
-A fully-featured **file and folder management backend system** built with **Node.js, Express, MongoDB, TypeScript**, and **JWT authentication**. This system includes authentication, user management, file & folder CRUD operations, file operations (copy, duplicate, rename, share, favorite), and calendar-based file/folder retrieval.
-
----
-
-## **Table of Contents**
-
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [API Endpoints](#api-endpoints)
-- [Installation](#installation)
-- [Environment Variables](#environment-variables)
-- [Usage](#usage)
-- [License](#license)
+A production-ready, scalable backend system for a Web-based AI Chatbot application with authentication, role-based access control, real-time AI streaming, file upload support (AWS S3), and admin monitoring.
 
 ---
 
-## **Features**
+# 🚀 Tech Stack
 
-### **Authentication & Authorization**
-- User registration & login
-- JWT-based access and refresh token authentication
-- Forgot password & OTP verification
-- Reset password
-- Google OAuth login
-
-### **User Management**
-- Create, read, update, delete users
-- Get logged-in user info (`getMe`)
-- Update logged-in user profile (`updateMyProfile`)
-
-### **File & Folder Management**
-- File CRUD (create virtual file, upload file, update content, export)
-- Folder CRUD
-- Copy, duplicate, rename, and share files
-- Mark files as favorite / remove from favorites
-- Retrieve files/folders by type: PDF, image, video, Word, Excel
-- Get 5 most recent files and folders
-- Calendar integration: get files/folders created on a specific date
-
-### **Additional Features**
-- File size & storage limit handling
-- Cookie-based authentication for sessions
-- Supports both uploaded and virtual files
-- File operations respect user ownership
+* **Node.js** – Non-blocking runtime for handling concurrent chat requests
+* **Express.js** – Lightweight and scalable API framework
+* **MongoDB** – Flexible NoSQL database for chat storage
+* **Mongoose** – Schema-based ODM for structured data modeling
+* **JWT** – Secure stateless authentication
+* **Passport (Google OAuth)** – Social login support
+* **AWS S3** – Scalable cloud file storage
+* **Multer + multer-s3** – File upload middleware
+* **Server-Sent Events (SSE)** – Real-time AI response streaming
+* **OpenAI API** – AI response generation
+* **Redis** – Rate limiting & caching
+* **Helmet** – Security headers protection
+* **Winston** – Structured logging for production monitoring
+* **CORS** – Cross-origin request handling
 
 ---
 
-## **Tech Stack**
-- **Backend:** Node.js, Express.js, TypeScript
-- **Database:** MongoDB (Mongoose)
-- **Authentication:** JWT, Passport.js (Google OAuth)
-- **Storage:** Cloud storage for uploaded files (Cloudinary/S3)
-- **Validation:** Zod for request validation
-- **Email:** Nodemailer for OTP and password reset
-- **Deployment:** Vercel / any Node.js hosting
+# 🏗 System Architecture
+
+Frontend (React)
+⬇
+Express API
+⬇
+Authentication (JWT / Passport)
+⬇
+Chat Controller
+⬇
+OpenAI API (Streaming via SSE)
+⬇
+MongoDB (Conversation & Messages)
+⬇
+AWS S3 (File Storage)
+
+---
+
+# 🔐 Authentication & Authorization
+
+* Email & Password registration/login
+* Google OAuth login
+* JWT-based protected routes
+* Role-based access control (user, admin, superadmin)
+* Account status management (active / disabled)
+
+---
+
+# 💬 Chat System Features
+
+* Real-time AI streaming using SSE
+* Persistent conversation history
+* Resume previous conversations
+* Optional conversation naming
+* Typing/loading indicators support
+* Error handling for AI/API failures
+
+---
+
+# 📂 File Upload System
+
+* Files uploaded via Multer
+* Stored securely in AWS S3
+* Metadata stored in MongoDB
+* Optional private access via signed URLs
+* Linked to conversation or specific message
+
+---
+
+# 📊 Admin Capabilities
+
+* View total users
+* View total chats
+* Enable/disable accounts
+* Basic usage monitoring
+
+---
+
+# 🗂 Database Design
+
+## User
+
+* name
+* email (unique)
+* passwordHash
+* role (user | admin | superadmin)
+* accountStatus
+* lastLogin
+* timestamps
+
+## Conversation
+
+* userId (reference)
+* title (optional)
+* timestamps
+
+## Message
+
+* conversationId (reference)
+* sender (user | bot)
+* content
+* fileId (optional)
+* timestamps
+
+## FileUpload
+
+* userId (reference)
+* conversationId (optional reference)
+* messageId (optional reference)
+* fileType (pdf | image | text)
+* fileUrl (AWS S3)
+* timestamps
+
+---
+
+# 🛡 Security Considerations
+
+* Environment variables for all secrets
+* Helmet for HTTP security headers
+* Rate limiting to prevent abuse
+* Structured logging with Winston
+* Role-based middleware protection
+* Secure S3 access (private bucket + signed URLs)
+
+---
+
+# 📦 Environment Variables
+
+```
+PORT=
+MONGO_URI=
+JWT_SECRET=
+OPENAI_API_KEY=
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
+AWS_REGION=
+S3_BUCKET_NAME=
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+REDIS_URL=
+```
+
+---
+
+# 🎯 Project Goals
+
+* Build a scalable AI chatbot backend
+* Follow production-level backend architecture
+* Maintain clean separation of concerns
+* Ensure security, scalability, and maintainability
+
+---
+
+# 📈 Future Improvements
+
+* Subscription & billing integration
+* Advanced analytics dashboard
+* Token usage tracking
+* Message search & filtering
+* Soft delete & audit logs
+
+---
+
+# 👨‍💻 Author
+
+Developed as a real-world production backend system for office use, following scalable SaaS architecture principles.
