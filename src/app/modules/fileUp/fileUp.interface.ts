@@ -1,8 +1,10 @@
+export type FileType = "image" | "video" | "pdf" | "any" | "audio";
+
 export enum FileTypes {
   IMAGE = "image",
   VIDEO = "video",
-  AUDIO = "audio",
   PDF = "pdf",
+  AUDIO = "audio",
 }
 
 export interface IFileUpload {

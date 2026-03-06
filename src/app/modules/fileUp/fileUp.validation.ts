@@ -1,14 +1,13 @@
-import { FileTypes } from "./fileUp.interface";
+import { z } from "zod";
 
-const mimeMap: Record<FileTypes, string[]> = {
-  image: ["image/jpeg", "image/png", "image/webp"],
-  video: ["video/mp4", "video/mpeg"],
-  audio: ["audio/mpeg", "audio/mp3"],
-  pdf: ["application/pdf"],
-};
+export const uploadFileValidationSchema = z.object({
+  body: z.object({
+    folder: z.string().optional(),
+  }),
+});
 
-export const validateFileType = (fileType: string, category: FileTypes) => {
-  if (!mimeMap[category].includes(fileType)) {
-    throw new Error(`Invalid ${category} file type`);
-  }
-};
+export const deleteFileValidationSchema = z.object({
+  key: z.string({
+    message: "File key is required",
+  }),
+});

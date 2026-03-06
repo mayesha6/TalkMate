@@ -1,55 +1,41 @@
 import { Request, Response } from "express";
-import httpStatus from "http-status-codes";
+import { FileService } from "./fileUp.services";
 import { sendResponse } from "../../utils/sendResponse";
-import { validateFileType } from "./fileUp.validation";
-import { deleteFileFromS3, generateUploadUrl } from "../../config/S3Client.config";
-import { saveFileInfo } from "./fileUp.services";
+import httpStatus from "http-status-codes";
 
-const getUploadUrl = async (req: Request, res: Response) => {
-    const { fileName, fileType, category } = req.body;
+const uploadFiles = async (req: Request, res: Response) => {
+    const files = req.files as Express.MulterS3.File[];
 
-    validateFileType(fileType, category);
+    if (!files || files.length === 0) {
+        return res.status(400).json({
+            success: false,
+            message: "No files uploaded",
+        });
+    }
 
-    const folder = category;
-
-    const data = await generateUploadUrl(fileName, fileType, folder);
-
-    sendResponse(res, {
-        success: true,
-        statusCode: httpStatus.OK,
-        message: "File uploaded successfully.",
-        data: data
-    });
-};
-
-const saveFile = async (req: Request, res: Response) => {
-    const { key, size, type } = req.body;
-
-    const file = await saveFileInfo(key, size, type);
+    const result = await FileService.uploadFiles(files);
 
     sendResponse(res, {
         success: true,
         statusCode: httpStatus.OK,
-        message: "File saved successfully.",
-        data: file
+        message: "Email Sent Successfully",
+        data: null,
     });
 };
 
 const deleteFile = async (req: Request, res: Response) => {
-    const { key } = req.params;
+    const { key } = req.body;
 
-    await deleteFileFromS3(key);
+    const result = await FileService.deleteFileFromS3(key);
 
-    sendResponse(res, {
+    res.status(200).json({
         success: true,
-        statusCode: httpStatus.OK,
-        message: "File deleted successfully.",
-        data: null
+        message: result.message,
     });
 };
 
-export const FileControllers = {
-    getUploadUrl,
-    saveFile,
+
+export const FileController = {
+    uploadFiles,
     deleteFile
 };
