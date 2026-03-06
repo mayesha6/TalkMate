@@ -15,8 +15,12 @@ export const s3Client = new S3Client({
 });
 
 // Generate Upload Url
-export const generateUploadUrl = async (fileName: string, fileType: string) => {
-  const key = `uploads/${Date.now()}-${fileName}`;
+export const generateUploadUrl = async (
+  fileName: string,
+  fileType: string,
+  folder: string
+) => {
+  const key = `${folder}/${Date.now()}-${fileName}`;
 
   const command = new PutObjectCommand({
     Bucket: envVars.S3.S3_BUCKET_NAME,
