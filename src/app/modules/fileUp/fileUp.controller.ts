@@ -5,7 +5,7 @@ import { validateFileType } from "./fileUp.validation";
 import { deleteFileFromS3, generateUploadUrl } from "../../config/S3Client.config";
 import { saveFileInfo } from "./fileUp.services";
 
-export const getUploadUrl = async (req: Request, res: Response) => {
+const getUploadUrl = async (req: Request, res: Response) => {
     const { fileName, fileType, category } = req.body;
 
     validateFileType(fileType, category);
@@ -22,7 +22,7 @@ export const getUploadUrl = async (req: Request, res: Response) => {
     });
 };
 
-export const saveFile = async (req: Request, res: Response) => {
+const saveFile = async (req: Request, res: Response) => {
     const { key, size, type } = req.body;
 
     const file = await saveFileInfo(key, size, type);
@@ -35,7 +35,7 @@ export const saveFile = async (req: Request, res: Response) => {
     });
 };
 
-export const deleteFile = async (req: Request, res: Response) => {
+const deleteFile = async (req: Request, res: Response) => {
     const { key } = req.params;
 
     await deleteFileFromS3(key);
@@ -46,4 +46,10 @@ export const deleteFile = async (req: Request, res: Response) => {
         message: "File deleted successfully.",
         data: null
     });
+};
+
+export const FileControllers = {
+    getUploadUrl,
+    saveFile,
+    deleteFile
 };
