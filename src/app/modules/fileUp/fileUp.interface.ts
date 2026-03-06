@@ -1,7 +1,8 @@
-export enum FileType {
-  PDF = "pdf",
+export enum FileTypes {
   IMAGE = "image",
-  TEXT = "text",
+  VIDEO = "video",
+  AUDIO = "audio",
+  PDF = "pdf",
 }
 
 export interface IFileUpload {
@@ -9,7 +10,7 @@ export interface IFileUpload {
   userId: string;
   conversationId?: string;
   messageId?: string;
-  fileType: FileType;
+  fileType: FileTypes;
   fileUrl: string;
   createdAt?: Date;
   updatedAt?: Date;
