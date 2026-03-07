@@ -21,7 +21,7 @@ const moduleRoutes = [
         route: UserRoutes
     },
     {
-        path: "/fileUp",
+        path: "/file",
         route: FileRoutes
     },
 

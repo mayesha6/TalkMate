@@ -8,13 +8,13 @@ const router = express.Router();
 router.post(
   "/upload",
   upload({
-    folder: "images",
+    folder: "test",
     fileType: FileTypes.IMAGE,
     maxCount: 5,
   }),
   FileController.uploadFiles
 );
 
-router.delete("/delete-file", FileController.deleteFile);
+router.delete("/delete", FileController.deleteFile);
 
 export const FileRoutes = router;

@@ -7,10 +7,12 @@ const uploadFiles = async (req: Request, res: Response) => {
     const files = req.files as Express.MulterS3.File[];
 
     if (!files || files.length === 0) {
-        return res.status(400).json({
-            success: false,
-            message: "No files uploaded",
-        });
+        return  sendResponse(res, {
+        success: false,
+        statusCode: httpStatus.NOT_FOUND,
+        message: "No files uploaded",
+        data: null,
+    });
     }
 
     const result = await FileService.uploadFiles(files);
@@ -18,8 +20,8 @@ const uploadFiles = async (req: Request, res: Response) => {
     sendResponse(res, {
         success: true,
         statusCode: httpStatus.OK,
-        message: "Email Sent Successfully",
-        data: null,
+        message: "Files uploaded Successfully",
+        data: result,
     });
 };
 
@@ -28,9 +30,11 @@ const deleteFile = async (req: Request, res: Response) => {
 
     const result = await FileService.deleteFileFromS3(key);
 
-    res.status(200).json({
+    sendResponse(res, {
         success: true,
+        statusCode: httpStatus.OK,
         message: result.message,
+        data: null,
     });
 };
 

@@ -9,6 +9,7 @@ import { QueryBuilder } from "../../utils/QueryBuiler";
 import { JwtPayload } from "jsonwebtoken";
 import { deleteImageFromCLoudinary, uploadBufferToCloudinary } from "../../config/cloudinary.config";
 import bcryptjs from 'bcryptjs';
+import { deleteFileFromS3 } from "../../config/S3Client.config";
 
 const createUser = async (payload: Partial<IUser>) => {
   const { email, password, ...rest } = payload;
@@ -109,35 +110,46 @@ const updateUser = async (userId: string, payload: Partial<IUser>, decodedToken:
     return newUpdatedUser
 }
 
+const getS3KeyFromUrl = (url: string) => {
+  const parts = url.split(`/${envVars.S3.S3_BUCKET_NAME}/`);
+  return parts[1] ?? "";
+};
 export const updateMyProfile = async (
   userId: string,
   payload: any,
   decodedToken: JwtPayload,
-  file?: Express.Multer.File
+  file?: Express.MulterS3.File
 ) => {
   const user = await User.findById(userId);
   if (!user) throw new AppError(404, "User not found");
 
+  // authorization check
   if (decodedToken.role === "USER" && decodedToken.userId !== userId) {
     throw new AppError(403, "You are not authorized");
   }
 
+  // hash password if provided
   if (payload.password) {
     payload.password = await bcryptjs.hash(
       payload.password,
-      Number(envVars.BCRYPT_SALT_ROUND)
+      Number(envVars.BCRYPT_SALT_ROUND || 10)
     );
   }
 
+  // handle profile picture update
   if (file) {
+    // delete old image from S3
     if (user.picture) {
-      await deleteImageFromCLoudinary(user.picture);
+      const oldKey = getS3KeyFromUrl(user.picture);
+      if (oldKey) await deleteFileFromS3(oldKey);
     }
 
-    const uploadResult = await uploadBufferToCloudinary(file.buffer, `profile-${userId}`);
-    payload.picture = uploadResult?.secure_url;
+    // new image already uploaded via multer-s3
+    // file.location contains the public URL
+    payload.picture = file.location;
   }
 
+  // update user
   const updated = await User.findByIdAndUpdate(userId, payload, {
     new: true,
     runValidators: true,

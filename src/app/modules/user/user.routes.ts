@@ -6,6 +6,8 @@ import { Role } from "./user.interface";
 import { updateUserZodSchema } from "./user.validation";
 import { multerUpload } from "../../config/multer.config";
 import { parseFormDataMiddleware } from "../../middlewares/parseFormDataMiddleware";
+import { upload } from "../../config/S3Client.config";
+import { FileTypes } from "../fileUp/fileUp.interface";
 
 const router = Router();
 
@@ -18,9 +20,13 @@ router.get("/me", checkAuth(...Object.values(Role)), UserControllers.getMe);
 router.patch(
   "/update-my-profile",
   checkAuth(...Object.values(Role)),
-  multerUpload.single("file"),          
-  parseFormDataMiddleware,              
-  validateRequest(updateUserZodSchema), 
+  upload({
+    folder: "UserImage",
+    fileType: FileTypes.IMAGE,
+    maxCount: 5,
+  }),
+  parseFormDataMiddleware,
+  validateRequest(updateUserZodSchema),
   UserControllers.updateMyProfile
 );
 router.get(
