@@ -1,6 +1,7 @@
 import express from "express";
 import { conversationIdParamSchema, createConversationSchema, updateConversationSchema } from "./conversation.validation";
 import { validateRequest } from "../../middlewares/validateRequest";
+import { ConversationControllers } from "./conversation.controller";
 
 
 const router = express.Router();
@@ -8,27 +9,26 @@ const router = express.Router();
 router.post(
   "/",
   validateRequest(createConversationSchema),
-  conversationController.createConversationHandler
+  ConversationControllers.createConversation
 );
 
-router.get("/", conversationController.getUserConversationsHandler);
+router.get("/", ConversationControllers.getUserConversations);
 
 router.get(
   "/:id",
   validateRequest(conversationIdParamSchema),
-  conversationController.getConversationByIdHandler
+  ConversationControllers.getConversationById
 );
 
 router.put(
   "/:id",
   validateRequest(updateConversationSchema),
-  conversationController.updateConversationHandler
+  ConversationControllers.updateConversation
 );
 
 router.delete(
   "/:id",
   validateRequest(conversationIdParamSchema),
-  conversationController.deleteConversationHandler
-);
+  ConversationControllers.deleteConversation
 
 export default router;

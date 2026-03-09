@@ -23,7 +23,7 @@ const deleteConversation = async (id: string) => {
   return Conversation.findByIdAndDelete(id);
 };
 
-export const UserServices = {
+export const ConversationServices = {
   createConversation,
   getUserConversations,
   getConversationById,
