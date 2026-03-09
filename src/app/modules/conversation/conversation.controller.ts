@@ -55,8 +55,32 @@ const getConversationById = catchAsync(
   }
 );
 
+const updateConversation = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+  const conversation = await ConversationServices.updateConversation(req.params.id, req.body);
+   sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Conversation Retrieved Successfully",
+      data: conversation,
+    });
+});
+
+const deleteConversation = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+  await ConversationServices.deleteConversation(req.params.id);
+  sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Conversation deleted Successfully",
+      data: null,
+    });
+});
+
 export const ConversationControllers = {
   createConversation,
   getUserConversations,
   getConversationById,
+  updateConversation,
+  deleteConversation,
 };

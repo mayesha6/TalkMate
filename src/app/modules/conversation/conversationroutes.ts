@@ -30,5 +30,5 @@ router.delete(
   "/:id",
   validateRequest(conversationIdParamSchema),
   ConversationControllers.deleteConversation
-
-export default router;
+)
+export const ConversationRoutes = router;
