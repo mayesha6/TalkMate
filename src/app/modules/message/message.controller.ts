@@ -5,12 +5,20 @@ import { sendResponse } from "../../utils/sendResponse";
 import httpStatus from "http-status-codes";
 
 const createMessage = catchAsync(async (req: Request, res: Response) => {
-  const result = await MessageServices.createMessage(req.body);
+  const { conversationId } = req.params;
+
+  const payload = {
+    conversationId,
+    sender: "user",
+    content: req.body.content as string,
+  };
+
+  const result = await MessageServices.createMessage(payload);
 
   sendResponse(res, {
     success: true,
-    statusCode: httpStatus.CREATED,
-    message: "Message created successfully",
+    statusCode: 201,
+    message: "Message sent successfully",
     data: result,
   });
 });

@@ -32,21 +32,9 @@ const updateMessage = async (id: string, content: string) => {
   return message;
 };
 
-const deleteMessage = async (id: string) => {
-  const message = await Message.findById(id);
-
-  if (!message) {
-    throw new AppError(httpStatus.NOT_FOUND, "Message not found");
-  }
-
-  await Message.findByIdAndDelete(id);
-
-  return null;
-};
 
 export const MessageServices = {
   createMessage,
   getMessagesByConversation,
   updateMessage,
-  deleteMessage,
 };
