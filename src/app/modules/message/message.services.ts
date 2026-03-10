@@ -14,6 +14,24 @@ const getMessagesByConversation = async (conversationId: string) => {
   return messages;
 };
 
+const updateMessage = async (id: string, content: string) => {
+  const message = await Message.findById(id);
+
+  if (!message) {
+    throw new AppError(httpStatus.NOT_FOUND, "Message not found");
+  }
+
+  // best practice
+  if (message.sender === "ai") {
+    throw new AppError(httpStatus.BAD_REQUEST, "AI message cannot be edited");
+  }
+
+  message.content = content;
+  await message.save();
+
+  return message;
+};
+
 const deleteMessage = async (id: string) => {
   const message = await Message.findById(id);
 
@@ -29,5 +47,6 @@ const deleteMessage = async (id: string) => {
 export const MessageServices = {
   createMessage,
   getMessagesByConversation,
+  updateMessage,
   deleteMessage,
 };

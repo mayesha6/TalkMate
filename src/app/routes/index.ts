@@ -4,6 +4,7 @@ import { AuthRoutes } from "../modules/auth/auth.routes"
 import { OtpRoutes } from "../modules/otp/otp.routes"
 import { FileRoutes } from "../modules/fileUp/fileUp.routes"
 import { ConversationRoutes } from "../modules/conversation/conversation.routes"
+import { MessageRoutes } from "../modules/message/message.routes"
 
 
 export const router = Router()
@@ -28,6 +29,10 @@ const moduleRoutes = [
     {
         path: "/conversation",
         route: ConversationRoutes
+    },
+    {
+        path: "/chats",
+        route: MessageRoutes
     },
 
 

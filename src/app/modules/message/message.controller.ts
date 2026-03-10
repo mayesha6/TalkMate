@@ -10,7 +10,7 @@ const createMessage = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     success: true,
     statusCode: httpStatus.CREATED,
-    message: "Message sent successfully",
+    message: "Message created successfully",
     data: result,
   });
 });
@@ -31,7 +31,22 @@ const getMessagesByConversation = catchAsync(
   }
 );
 
+const updateMessage = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { content } = req.body;
+
+  const result = await MessageServices.updateMessage(id, content);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Message updated successfully",
+    data: result,
+  });
+});
+
 export const MessageControllers = {
   createMessage,
   getMessagesByConversation,
+  updateMessage,
 };
