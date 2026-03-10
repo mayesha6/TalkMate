@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-// create conversation
 export const createConversationSchema = z.object({
   title: z
       .string({
@@ -9,16 +8,7 @@ export const createConversationSchema = z.object({
       .optional(),
 });
 
-// update conversation
-export const updateConversationSchema = z.object({
-  body: z.object({
-    title: z.string().optional(),
-  }),
-});
 
-// params validation
-export const conversationIdParamSchema = z.object({
-  params: z.object({
-    id: z.string().min(1, "Conversation ID is required"),
-  }),
+export const updateConversationSchema = z.object({
+  title: z.string().optional(),
 });

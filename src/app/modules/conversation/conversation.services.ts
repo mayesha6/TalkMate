@@ -4,8 +4,7 @@ import { Conversation } from "./conversation.model";
 
 const createConversation = async (userId: string, data:any) => {
   const conversation = await Conversation.create({ 
-    userId, 
-    title: data.title || "New Chat"
+    userId
 });
   return conversation;
 };

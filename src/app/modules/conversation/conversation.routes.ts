@@ -1,5 +1,5 @@
 import express from "express";
-import { conversationIdParamSchema, createConversationSchema, updateConversationSchema } from "./conversation.validation";
+import { updateConversationSchema } from "./conversation.validation";
 import { validateRequest } from "../../middlewares/validateRequest";
 import { ConversationControllers } from "./conversation.controller";
 import { checkAuth } from "../../middlewares/checkAuth";
@@ -14,15 +14,14 @@ router.post(
   ConversationControllers.createConversation
 );
 
-router.get("/", ConversationControllers.getUserConversations);
+router.get("/", checkAuth("USER", "ADMIN", "SUPER_ADMIN"), ConversationControllers.getUserConversations);
 
 router.get(
   "/:id",
-  validateRequest(conversationIdParamSchema),
   ConversationControllers.getConversationById
 );
 
-router.put(
+router.patch(
   "/:id",
   validateRequest(updateConversationSchema),
   ConversationControllers.updateConversation
@@ -30,7 +29,6 @@ router.put(
 
 router.delete(
   "/:id",
-  validateRequest(conversationIdParamSchema),
   ConversationControllers.deleteConversation
 )
 export const ConversationRoutes = router;
