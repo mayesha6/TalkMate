@@ -10,6 +10,9 @@ import { JwtPayload } from "jsonwebtoken";
 import { deleteImageFromCLoudinary, uploadBufferToCloudinary } from "../../config/cloudinary.config";
 import bcryptjs from 'bcryptjs';
 import { deleteFileFromS3 } from "../../config/S3Client.config";
+import { generateOtp } from "../otp/otp.service";
+import { sendEmail } from "../../utils/sendEmail";
+import { redisClient } from "../../config/redis.config";
 
 const createUser = async (payload: Partial<IUser>) => {
   const { email, password, ...rest } = payload;
@@ -35,6 +38,26 @@ const createUser = async (payload: Partial<IUser>) => {
     password: hashedPassword,
     auths: [authProvider],
     ...rest,
+  });
+
+    if (!user) {
+    throw new AppError(httpStatus.BAD_REQUEST, "Failed to register user");
+  }
+  const redisKey = `otp:${email}`;
+const otp = generateOtp();
+
+  await redisClient.set(redisKey, otp, {
+    expiration: { type: "EX", value: 120 },
+  });
+
+  await sendEmail({
+    to: email,
+    subject: "Account Verification OTP",
+    templateName: "otp",
+    templateData: {
+      name: user.name,
+      otp,
+    },
   });
 
   return user;
@@ -114,7 +137,8 @@ const getS3KeyFromUrl = (url: string) => {
   const parts = url.split(`/${envVars.S3.S3_BUCKET_NAME}/`);
   return parts[1] ?? "";
 };
-export const updateMyProfile = async (
+
+const updateMyProfile = async (
   userId: string,
   payload: any,
   decodedToken: JwtPayload,
@@ -151,7 +175,7 @@ export const updateMyProfile = async (
 
   // update user
   const updated = await User.findByIdAndUpdate(userId, payload, {
-    new: true,
+    returnDocument: "after",
     runValidators: true,
   });
 

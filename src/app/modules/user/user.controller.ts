@@ -6,16 +6,11 @@ import { JwtPayload } from "jsonwebtoken";
 import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
 import { UserServices } from "./user.services";
-import { getFileUrl } from "../../config/S3Client.config";
 
 const createUser = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const payload = req.body;
 
-    const files = req.files as Express.MulterS3.File[];
-    payload.picture = getFileUrl(files[0]);
 
-    
     const user = await UserServices.createUser(req.body);
 
     sendResponse(res, {
@@ -92,7 +87,7 @@ const updateUser = catchAsync(
   }
 );
 
-export const updateMyProfile = catchAsync(
+const updateMyProfile = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     // decoded JWT token
     const decodedToken = req.user as JwtPayload;
@@ -101,9 +96,10 @@ export const updateMyProfile = catchAsync(
     // copy request body
     const payload: any = { ...req.body };
 
-    // file uploaded via multer-s3
-    const uploadedFile = req.file as Express.MulterS3.File | undefined;
 
+    // file uploaded via multer-s3
+    const uploadedFile = (req.files as Express.MulterS3.File[])?.[0];
+console.log("file:", uploadedFile);
     // call service
     const updatedUser = await UserServices.updateMyProfile(
       userId,

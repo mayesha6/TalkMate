@@ -6,13 +6,13 @@ import { sendResponse } from "../../utils/sendResponse";
 import { JwtPayload } from "jsonwebtoken";
 
 const createConversation = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response) => {
     const payload = req.body;
-    const user = req.user;
-
+    const user = req.user as JwtPayload;
+    console.log(user)
     const result = await ConversationServices.createConversation(
-      payload,
-      user
+      user.userId,
+      payload
     );
 
     sendResponse(res, {

@@ -5,6 +5,8 @@ import { OTPController } from "./otp.controller";
 const router = express.Router();
 
 
+router.post("/verify-signup-otp", OTPController.verifySignupOtp);
+router.post("/resend-otp", OTPController.resendOtp);
 
 router.post("/verify-reset", OTPController.verifyResetOtp);
 export const OtpRoutes = router;

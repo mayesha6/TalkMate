@@ -3,6 +3,7 @@ import { UserRoutes } from "../modules/user/user.routes"
 import { AuthRoutes } from "../modules/auth/auth.routes"
 import { OtpRoutes } from "../modules/otp/otp.routes"
 import { FileRoutes } from "../modules/fileUp/fileUp.routes"
+import { ConversationRoutes } from "../modules/conversation/conversation.routes"
 
 
 export const router = Router()
@@ -23,6 +24,10 @@ const moduleRoutes = [
     {
         path: "/file",
         route: FileRoutes
+    },
+    {
+        path: "/conversation",
+        route: ConversationRoutes
     },
 
 

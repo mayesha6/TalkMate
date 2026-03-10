@@ -23,7 +23,7 @@ router.patch(
   upload({
     folder: "UserImage",
     fileType: FileTypes.IMAGE,
-    maxCount: 5,
+    maxCount: 1,
   }),
   parseFormDataMiddleware,
   validateRequest(updateUserZodSchema),

@@ -2,8 +2,11 @@ import { IConversation } from "./conversation.interface";
 import { Conversation } from "./conversation.model";
 
 
-const createConversation = async (userId: string, data: Partial<IConversation>) => {
-  const conversation = await Conversation.create({ userId, ...data });
+const createConversation = async (userId: string, data:any) => {
+  const conversation = await Conversation.create({ 
+    userId, 
+    title: data.title || "New Chat"
+});
   return conversation;
 };
 

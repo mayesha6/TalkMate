@@ -2,13 +2,15 @@ import express from "express";
 import { conversationIdParamSchema, createConversationSchema, updateConversationSchema } from "./conversation.validation";
 import { validateRequest } from "../../middlewares/validateRequest";
 import { ConversationControllers } from "./conversation.controller";
+import { checkAuth } from "../../middlewares/checkAuth";
 
 
 const router = express.Router();
 
 router.post(
   "/",
-  validateRequest(createConversationSchema),
+  checkAuth("USER", "ADMIN", "SUPER_ADMIN"),
+  // validateRequest(createConversationSchema),
   ConversationControllers.createConversation
 );
 

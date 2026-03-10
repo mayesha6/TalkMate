@@ -56,6 +56,8 @@ export const sendEmail = async ({
     }
 }
 
+
+
 // import ejs from "ejs";
 // import nodemailer from "nodemailer";
 // import { envVars } from "../config/env";

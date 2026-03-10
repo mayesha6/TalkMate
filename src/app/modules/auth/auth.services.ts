@@ -19,64 +19,47 @@ const getNewAccessToken = async (refreshToken: string) => {
     }
 
 }
-const resetPassword = async (payload: Record<string, any>, decodedToken: JwtPayload) => {
-    if (payload.id != decodedToken.userId) {
-        throw new AppError(401, "You can not reset your password")
-    }
 
-    const isUserExist = await User.findById(decodedToken.userId)
-    if (!isUserExist) {
-        throw new AppError(401, "User does not exist")
-    }
+const resetPassword = async (
+  email: string,
+  otp: string,
+  newPassword: string
+) => {
+  const user = await User.findOne({ email });
 
-    const hashedPassword = await bcryptjs.hash(
-        payload.newPassword,
-        Number(envVars.BCRYPT_SALT_ROUND)
-    )
+  if (!user) throw new AppError(404, "User not found");
+  if (!user.isVerified) throw new AppError(401, "User not verified");
+  if (user.isDeleted) throw new AppError(400, "User is deleted");
+  if (user.isActive === "BLOCKED" || user.isActive === "INACTIVE") {
+    throw new AppError(400, `User is ${user.isActive}`);
+  }
 
-    isUserExist.password = hashedPassword;
+  const redisKey = `otp:reset:${email}`;
 
-    await isUserExist.save()
-}
-// const forgotPassword = async (email: string) => {
-//     const isUserExist = await User.findOne({ email });
+  const storedOtp = await redisClient.get(redisKey);
 
-//     if (!isUserExist) {
-//         throw new AppError(httpStatus.BAD_REQUEST, "User does not exist")
-//     }
-//     if (!isUserExist.isVerified) {
-//         throw new AppError(httpStatus.BAD_REQUEST, "User is not verified")
-//     }
-//     if (isUserExist.isActive === IsActive.BLOCKED || isUserExist.isActive === IsActive.INACTIVE) {
-//         throw new AppError(httpStatus.BAD_REQUEST, `User is ${isUserExist.isActive}`)
-//     }
-//     if (isUserExist.isDeleted) {
-//         throw new AppError(httpStatus.BAD_REQUEST, "User is deleted")
-//     }
+  if (!storedOtp) {
+    throw new AppError(400, "OTP expired or invalid");
+  }
 
-//     const jwtPayload = {
-//         userId: isUserExist._id,
-//         email: isUserExist.email,
-//         role: isUserExist.role
-//     }
+  if (storedOtp !== otp) {
+    throw new AppError(400, "Invalid OTP");
+  }
 
-//     const resetToken = jwt.sign(jwtPayload, envVars.JWT_ACCESS_SECRET, {
-//         expiresIn: "10m"
-//     })
+  // hash new password
+  const hashedPassword = await bcryptjs.hash(
+    newPassword,
+    Number(envVars.BCRYPT_SALT_ROUND || 10)
+  );
 
-//     const resetUILink = `${envVars.FRONTEND_URL}/reset-password?id=${isUserExist._id}&token=${resetToken}`
+  user.password = hashedPassword;
+  await user.save();
 
-//     sendEmail({
-//         to: isUserExist.email,
-//         subject: "Password Reset",
-//         templateName: "forgetPassword",
-//         templateData: {
-//             name: isUserExist.name,
-//             resetUILink
-//         }
-//     })
+  // delete OTP after success
+  await redisClient.del(redisKey);
 
-// }
+  return null;
+};
 
 const forgotPassword = async (email: string) => {
   const user = await User.findOne({ email });

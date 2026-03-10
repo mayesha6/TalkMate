@@ -2,13 +2,11 @@ import { z } from "zod";
 
 // create conversation
 export const createConversationSchema = z.object({
-  body: z.object({
-    title: z
+  title: z
       .string({
         message: "Title must be a string",
       })
       .optional(),
-  }),
 });
 
 // update conversation
