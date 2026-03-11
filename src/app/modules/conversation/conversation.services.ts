@@ -1,4 +1,5 @@
 import AppError from "../../errorHelpers/AppError";
+import { Message } from "../message/message.model";
 import { IConversation } from "./conversation.interface";
 import { Conversation } from "./conversation.model";
 import httpStatus from "http-status-codes";
@@ -39,10 +40,26 @@ const deleteConversation = async (id: string) => {
   return conversation;
 };
 
+const deleteAllConversations = async (userId: string) => {
+  // find all conversations of this user
+  const conversations = await Conversation.find({ userId }).select("_id");
+
+  const conversationIds = conversations.map((c) => c._id);
+
+  // delete conversations
+  await Conversation.deleteMany({ userId });
+
+  // delete messages related to those conversations
+  await Message.deleteMany({ conversationId: { $in: conversationIds } });
+
+  return null;
+};
+
 export const ConversationServices = {
   createConversation,
   getUserConversations,
   getConversationById,
   updateConversation,
   deleteConversation,
+  deleteAllConversations
 };

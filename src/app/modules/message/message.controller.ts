@@ -9,16 +9,14 @@ import AppError from "../../errorHelpers/AppError";
 export const createMessage = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const { conversationId } = req.params;
-    const user = req.user as JwtPayload;
-
-    
+    const user = req.user as JwtPayload;    
 
     const uploadedFile = req.files as Express.MulterS3.File[];
     console.log("file:", uploadedFile)
-    if (!req.body.content && !req.files) {
+    if (!req?.body?.content && !req?.files) {
       throw new AppError(httpStatus.BAD_REQUEST, "Message must contain text or image");
     }
-  
+  console.log("req.body.content", req.body.content)
     const payload: Partial<any> = {
       conversationId,
       sender: "user",
@@ -36,7 +34,33 @@ export const createMessage = catchAsync(
   }
 );
 
+// const createMessage = catchAsync(
+//   async (req: Request, res: Response, next:NextFunction) => {
+//     const { conversationId } = req.params;
+//     const user = req.user as JwtPayload;
+//     const files = req.files as Express.MulterS3.File[];
 
+//     if (!req.body.content && !files?.length) {
+//       throw new AppError(400, "Message must contain text or image");
+//     }
+
+//     const payload: Partial<any> = {
+//       conversationId,
+//       sender: "user",
+//       content: req.body.content,
+//       userId: user.userId,
+//     };
+
+//     const result = await MessageServices.createMessage(payload, files);
+
+//     sendResponse(res, {
+//       success: true,
+//       statusCode: 201,
+//       message: "Message sent successfully",
+//       data: result,
+//     });
+//   }
+// );
 
 const getMessagesByConversation = catchAsync(
   async (req: Request, res: Response) => {
