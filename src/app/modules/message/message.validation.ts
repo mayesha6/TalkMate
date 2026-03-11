@@ -1,13 +1,13 @@
 import { z } from "zod";
 
-export const createMessageSchema = z.object({
+export const createMessage = z.object({
   content: z.string({
     message: "Message content is required",
   }),
 });
 
 
-export const updateMessageSchema = z.object({
+export const updateMessage = z.object({
   content: z
     .string({
       message: "Message content is required",

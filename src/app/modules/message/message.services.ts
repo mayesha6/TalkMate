@@ -1,11 +1,75 @@
+import { Types } from "mongoose";
+import { getFileUrl } from "../../config/S3Client.config";
 import AppError from "../../errorHelpers/AppError";
+import { checkDailyMediaLimit } from "../../utils/checkDailyMediaLimit";
+import { generateAIResponse } from "../ai/ai.services";
+import { IMessage } from "./message.interface";
 import { Message } from "./message.model";
 import httpStatus from "http-status-codes";
 
-const createMessage = async (payload: any) => {
-  const message = await Message.create(payload);
+export const createMessage = async (
+  payload: Partial<any>,
+  files?: Express.MulterS3.File[]
+) => {
+
+  let fileUrls: string[] = [];
+
+
+  if (files && files.length > 0) {
+
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const result = await Message.aggregate([
+      {
+        $match: {
+          sender: "user",
+          $expr: { $eq: [{ $toString: "$userId" }, payload.userId] },
+          // userId: payload.userId,
+          createdAt: { $gte: startOfDay, $lte: endOfDay },
+        },
+      },
+      {
+        $project: {
+          // imageCount: { $size: "$fileUrls" },
+            imageCount: { $size: { $ifNull: ["$fileUrls", []] } },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalImages: { $sum: "$imageCount" },
+        },
+      },
+    ]);
+
+    const uploadedToday = result[0]?.totalImages || 0;
+console.log("result[0]", result)
+    if (uploadedToday + files.length > 5) {
+      throw new AppError(
+        429,
+        "You have reached your daily upload limit for images (5 per day)"
+      );
+    }
+
+    fileUrls = files.map((file) => file.location);
+    console.log("uploadedToday:", uploadedToday);
+console.log("newFiles:", files?.length);
+console.log("payload", payload)
+  }
+
+  const message = await Message.create({
+    ...payload,
+    fileUrls,
+  });
+
   return message;
 };
+
+
 
 const getMessagesByConversation = async (conversationId: string) => {
   const messages = await Message.find({ conversationId })

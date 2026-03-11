@@ -41,6 +41,7 @@
     "multer-s3": "^3.0.1",
     "multer-storage-cloudinary": "^2.2.1",
     "nodemailer": "^7.0.12",
+    "openai": "^6.27.0",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
     "passport-local": "^1.0.0",

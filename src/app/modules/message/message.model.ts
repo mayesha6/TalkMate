@@ -8,27 +8,32 @@ const MessageSchema = new Schema<IMessage>(
       ref: "Conversation",
       required: true,
     },
-
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
     sender: {
       type: String,
       enum: ["user", "ai"],
       required: true,
     },
-
     content: {
       type: String,
-      required: true,
     },
-
+    fileUrls: [{
+      type: String,
+    }],
     tokensUsed: {
       type: Number,
     },
-
     model: {
       type: String,
     },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
 
 export const Message = mongoose.model<IMessage>("Message", MessageSchema);
