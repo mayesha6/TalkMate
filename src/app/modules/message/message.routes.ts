@@ -15,7 +15,7 @@ router.post(
     fileType: "any",
     maxCount: 6,
   }),
-  validateRequest(createMessage),
+  // validateRequest(createMessage),
   MessageControllers.createMessage
 );
 

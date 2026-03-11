@@ -31,4 +31,10 @@ router.delete(
   "/:id",
   ConversationControllers.deleteConversation
 )
+
+router.delete(
+  "/",
+  checkAuth("USER", "ADMIN", "SUPER_ADMIN"),
+  ConversationControllers.deleteAllConversations
+)
 export const ConversationRoutes = router;

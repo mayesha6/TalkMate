@@ -77,10 +77,26 @@ const deleteConversation = catchAsync(
     });
 });
 
+const deleteAllConversations = catchAsync(
+  async (req: Request, res: Response) => {
+    const user = req.user as JwtPayload;
+
+    await ConversationServices.deleteAllConversations(user.userId);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "All user conversations deleted successfully",
+      data: null,
+    });
+  }
+);
+
 export const ConversationControllers = {
   createConversation,
   getUserConversations,
   getConversationById,
   updateConversation,
   deleteConversation,
+  deleteAllConversations
 };
